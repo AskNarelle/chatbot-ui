@@ -1,4 +1,4 @@
-# AskNarelle-Frontend
+# AskNarelle chatbot-ui
 
 This is a simple React application for a chatbot frontend, created using Material-UI.
 
