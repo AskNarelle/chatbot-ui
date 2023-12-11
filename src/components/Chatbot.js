@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; 
 import {
   Box,
   TextField,
@@ -14,39 +15,50 @@ const ChatUI = () => {
   const [input, setInput] = React.useState("");
   const [messages, setMessages] = React.useState([]);
   const [showInput, setShowInput] = React.useState(true);
+  const [firstApiCompleted, setFirstApiCompleted] = useState(false);
 
   const chatContainerRef = React.useRef();
+
+  useEffect(() => {
+    const handleSecondApiCall = async () => {
+      try {
+        await axios.post('http://localhost:3001/save-text', {
+          content: JSON.stringify(messages)
+        });
+        setFirstApiCompleted(false);
+      } catch (error) {
+        console.error('Error in the save-text API call:', error);
+      }
+    };
+
+    if (firstApiCompleted && messages.length > 0) {
+      handleSecondApiCall();
+    }
+  }, [firstApiCompleted, messages]);
 
   const handleSend = async () => {
     if (input.trim() !== "") {
       const userMessage = { id: messages.length + 1, text: input, sender: "user" };
-      setMessages([...messages, userMessage]);
+      setMessages(prevMessages => [...prevMessages, userMessage]);
       setInput("");
-
+  
       try {
-        const response = await fetch('http://localhost:5000/getAns', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userInput: input }),
+        const response = await axios.post('http://localhost:5000/getAns', {
+          userInput: input
         });
-
-        const data = await response.json();
-
-        // Update state with the bot's response after the user's message has been added
+  
+        const data = response.data;
         const botResponse = { id: messages.length + 2, text: data.Answer, sender: "bot" };
         setMessages(prevMessages => [...prevMessages, botResponse]);
-
-        // Hide the input box after receiving the response
+  
         setShowInput(false);
-
+        setFirstApiCompleted(true);
       } catch (error) {
         console.error('Error sending data to backend:', error);
       }
     }
-  };
-
+  };  
+  
   const handleNewQuestion = () => {
     // Reset the chat and show the input box
     setMessages([]);
