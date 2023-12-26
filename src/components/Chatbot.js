@@ -8,15 +8,17 @@ import {
   Avatar,
   Grid,
   Paper,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import ConfirmationDialog from "./ConfirmationDialog"; // Import the ConfirmationDialog component
 
 const ChatUI = () => {
   const [input, setInput] = React.useState("");
   const [messages, setMessages] = React.useState([]);
-  const [showInput, setShowInput] = React.useState(true);
   const [firstApiCompleted, setFirstApiCompleted] = useState(false);
-
+  const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
   const chatContainerRef = React.useRef();
 
   useEffect(() => {
@@ -51,7 +53,6 @@ const ChatUI = () => {
         const botResponse = { id: messages.length + 2, text: data.Answer, sender: "bot" };
         setMessages(prevMessages => [...prevMessages, botResponse]);
   
-        setShowInput(false);
         setFirstApiCompleted(true);
       } catch (error) {
         console.error('Error sending data to backend:', error);
@@ -60,9 +61,14 @@ const ChatUI = () => {
   };  
   
   const handleNewQuestion = () => {
-    // Reset the chat and show the input box
+    // Open the confirmation dialog
+    setOpenDialog(true);
+  };
+
+  const handleResetChat = () => {
+    // Reset the chat and close the dialog
     setMessages([]);
-    setShowInput(true);
+    setOpenDialog(false);
   };
 
   React.useEffect(() => {
@@ -89,6 +95,16 @@ const ChatUI = () => {
         bgcolor: "grey.200",
       }}
     >
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            AskNarelle
+          </Typography>
+          <Button color="inherit" onClick={handleNewQuestion} style={{ backgroundColor: 'black' }}>
+            Reset Chat
+          </Button>
+        </Toolbar>
+      </AppBar>
       <Box
         ref={chatContainerRef}
         sx={{
@@ -102,42 +118,37 @@ const ChatUI = () => {
         ))}
       </Box>
       <Box sx={{ p: 2, backgroundColor: "background.default" }}>
-        {showInput ? (
-          <Grid container spacing={2}>
-            <Grid item xs={10}>
-              <TextField
-                size="small"
-                fullWidth
-                placeholder="Type a question"
-                variant="outlined"
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyPress}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <Button
-                fullWidth
-                color="primary"
-                variant="contained"
-                endIcon={<SendIcon />}
-                onClick={handleSend}
-              >
-                Send
-              </Button>
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={10}>
+            <TextField
+              size="small"
+              fullWidth
+              placeholder="Type a question"
+              variant="outlined"
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyPress}
+            />
           </Grid>
-        ) : (
-          <Button
-            fullWidth
-            color="primary"
-            variant="contained"
-            onClick={handleNewQuestion}
-          >
-            New Question
-          </Button>
-        )}
+          <Grid item xs={2}>
+            <Button
+              fullWidth
+              color="primary"
+              variant="contained"
+              endIcon={<SendIcon />}
+              onClick={handleSend}
+            >
+              Send
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
+      {/* Integration of the ConfirmationDialog component */}
+      <ConfirmationDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={handleResetChat}
+      />
     </Box>
   );
 };
