@@ -46,7 +46,8 @@ const ChatUI = () => {
   
       try {
         const response = await axios.post('http://localhost:5000/getAns', {
-          userInput: input
+          userInput: input,
+          chatHistory: messages
         });
   
         const data = response.data;
@@ -143,7 +144,6 @@ const ChatUI = () => {
           </Grid>
         </Grid>
       </Box>
-      {/* Integration of the ConfirmationDialog component */}
       <ConfirmationDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
