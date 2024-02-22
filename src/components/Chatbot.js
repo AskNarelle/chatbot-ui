@@ -17,6 +17,7 @@ import ConfirmationDialog from "./ConfirmationDialog"; // Import the Confirmatio
 const ChatUI = () => {
   const [input, setInput] = React.useState("");
   const [messages, setMessages] = React.useState([]);
+  const [conversationId, setConversationId] = useState('');
   const [firstApiCompleted, setFirstApiCompleted] = useState(false);
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
   const chatContainerRef = React.useRef();
@@ -24,12 +25,21 @@ const ChatUI = () => {
   useEffect(() => {
     const handleSecondApiCall = async () => {
       try {
-        await axios.post('http://localhost:3001/save-text', {
-          content: JSON.stringify(messages)
-        });
+        const payload = {
+          _id: conversationId,
+          content: JSON.stringify(messages),
+        };
+
+        await axios.post('http://localhost:3001/save-text', payload)
+          .then(response => {
+            if (!conversationId || conversationId == '') {
+              setConversationId(response.data._id);
+            }
+          })
+
         setFirstApiCompleted(false);
       } catch (error) {
-        console.error('Error in the save-text API call:', error);
+        console.error('Error in the API call:', error);
       }
     };
 
@@ -69,6 +79,7 @@ const ChatUI = () => {
   const handleResetChat = () => {
     // Reset the chat and close the dialog
     setMessages([]);
+    setConversationId('')
     setOpenDialog(false);
   };
 
