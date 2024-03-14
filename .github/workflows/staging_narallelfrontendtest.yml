@@ -30,13 +30,13 @@ jobs:
 
       # Create artifact archive
       - name: Create artifact archive
-        run: zip -r artifact.zip ./build
+        run: tar -czf artifact.tar.gz ./build
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: artifact.zip
+          path: artifact.tar.gz
 
   deploy:
     runs-on: ubuntu-latest
