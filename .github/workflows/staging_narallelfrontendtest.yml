@@ -57,5 +57,5 @@ jobs:
         with:
           app-name: 'NarallelFrontendTest'
           slot-name: 'Production'
-          package: .
+          package: './node-app'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_27514631A52041DA8851F7D0EB770FEB }}
