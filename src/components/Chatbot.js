@@ -17,10 +17,11 @@ import ConfirmationDialog from "./ConfirmationDialog"; // Import the Confirmatio
 const ChatUI = () => {
   const [input, setInput] = React.useState("");
   const [messages, setMessages] = React.useState([]);
-  const [firstApiCompleted, setFirstApiCompleted] = useState(false);
+  //const [firstApiCompleted, setFirstApiCompleted] = useState(false);
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
   const chatContainerRef = React.useRef();
 
+  /*
   useEffect(() => {
     const handleSecondApiCall = async () => {
       try {
@@ -37,6 +38,7 @@ const ChatUI = () => {
       handleSecondApiCall();
     }
   }, [firstApiCompleted, messages]);
+  */
 
   const handleSend = async () => {
     if (input.trim() !== "") {
@@ -45,7 +47,7 @@ const ChatUI = () => {
       setInput("");
   
       try {
-        const response = await axios.post('http://localhost:5000/getAns', {
+        const response = await axios.post('https://narallelbackendtest.azurewebsites.net/getAns', {
           userInput: input
         });
   
@@ -53,7 +55,7 @@ const ChatUI = () => {
         const botResponse = { id: messages.length + 2, text: data.Answer, sender: "bot" };
         setMessages(prevMessages => [...prevMessages, botResponse]);
   
-        setFirstApiCompleted(true);
+        //setFirstApiCompleted(true);
       } catch (error) {
         console.error('Error sending data to backend:', error);
       }
