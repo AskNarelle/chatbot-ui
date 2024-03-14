@@ -47,7 +47,7 @@ const ChatUI = () => {
       setInput("");
   
       try {
-        const response = await axios.post('http://localhost:5000/getAns', {
+        const response = await axios.post('https://narallelbackendtest.azurewebsites.net/getAns', {
           userInput: input
         });
   
