@@ -26,12 +26,17 @@ jobs:
           npm install
           npm run build --if-present
           npm run test -- --passWithNoTests
+
+
+      # Create artifact archive
+      - name: Create artifact archive
+        run: zip -r artifact.zip ./build
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: artifact.zip
 
   deploy:
     runs-on: ubuntu-latest
