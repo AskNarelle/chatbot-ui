@@ -26,7 +26,7 @@ jobs:
           npm run test -- --passWithNoTests
       # Create artifact archive
       - name: Create artifact archive
-        run: tar -czf artifact.tar.gz /build
+        run: tar -czf artifact.tar.gz ./build/*
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'NarallelFrontendTest'
           slot-name: 'Production'
-          package: /build
+          package: ./build
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_27514631A52041DA8851F7D0EB770FEB }}
