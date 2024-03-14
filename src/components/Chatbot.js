@@ -103,7 +103,7 @@ const ChatUI = () => {
             AskNarelle
           </Typography>
           <Button color="inherit" onClick={handleNewQuestion} style={{ backgroundColor: 'black' }}>
-            Reset Chat
+            Reset Chatting
           </Button>
         </Toolbar>
       </AppBar>
