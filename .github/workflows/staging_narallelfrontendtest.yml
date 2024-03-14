@@ -30,7 +30,7 @@ jobs:
 
       # Create artifact archive
       - name: Create artifact archive
-        run: tar -czf artifact.tar.gz ./build
+        run: tar -czf artifact.tar.gz /build
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -51,11 +51,15 @@ jobs:
         with:
           name: node-app
       
+      - name: Extract artifact
+      run: tar -xzf node-app/artifact.tar.gz
+
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
           app-name: 'NarallelFrontendTest'
           slot-name: 'Production'
-          package: './node-app'
+          package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_27514631A52041DA8851F7D0EB770FEB }}
